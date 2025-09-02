@@ -3,6 +3,7 @@ package daytona
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -93,6 +94,12 @@ func NewClient(config *Config) (*Client, error) {
 	if config.OrgID != "" {
 		apiConfig.AddDefaultHeader("X-Daytona-Organization-ID", config.OrgID)
 	}
+
+	// Configure HTTP client with custom timeout
+	httpClient := &http.Client{
+		Timeout: config.Timeout,
+	}
+	apiConfig.HTTPClient = httpClient
 
 	// Create API client
 	apiClient := api.NewAPIClient(apiConfig)
