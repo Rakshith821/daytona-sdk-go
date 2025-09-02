@@ -96,10 +96,13 @@ func NewClient(config *Config) (*Client, error) {
 	}
 
 	// Configure HTTP client with custom timeout
-	httpClient := &http.Client{
-		Timeout: config.Timeout,
+	// Only set custom HTTP client if timeout is configured, otherwise use default
+	if config.Timeout > 0 {
+		httpClient := &http.Client{
+			Timeout: config.Timeout,
+		}
+		apiConfig.HTTPClient = httpClient
 	}
-	apiConfig.HTTPClient = httpClient
 
 	// Create API client
 	apiClient := api.NewAPIClient(apiConfig)
